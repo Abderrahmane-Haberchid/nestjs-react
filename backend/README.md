@@ -59,7 +59,26 @@ $ npm run test:cov
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+This repository contains both `backend/` and `frontend/`. To deploy the
+combined app to Railway:
+
+1. Set the Railway service **Root Directory** to `/` (the repository root),
+   not `/backend`.
+2. Use `npm run build` as the build command. It builds the Vite frontend first
+   and then compiles NestJS.
+3. Use `npm start` as the start command.
+4. Do not set `PORT` yourself. Railway assigns it at runtime; the Nest server
+   binds to that port on `0.0.0.0`.
+5. Optionally set `FRONTEND_URL` to the deployed frontend origin if it differs
+   from the local development origins.
+
+The API health check can use `/api/v1/products`. The built frontend is served
+from the repository's `frontend/dist` directory.
+
+When you're ready to deploy your NestJS application to production, there are
+some key steps you can take to ensure it runs as efficiently as possible.
+Check out the [deployment documentation](https://docs.nestjs.com/deployment)
+for more information.
 
 If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
