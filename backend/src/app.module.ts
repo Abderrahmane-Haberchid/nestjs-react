@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
 import { ProductsController } from './products/products.controller.js';
 import { ProductsService } from './products/products.service.js';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path/win32';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -13,6 +15,10 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       appKey: 'YOUR_APP_KEY',
       appSecret: 'YOUR_APP_SECRET',
       serviceId: 'backend',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'frontend', 'dist'),
+      exclude: ['/api/(.*)'],
     }),
   ],
   controllers: [ProductsController],
