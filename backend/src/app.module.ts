@@ -1,11 +1,16 @@
 import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
-import { ProductsController } from './products/products.controller.js';
-import { ProductsService } from './products/products.service.js';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path/win32';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ProductsModule } from './products/products.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
+
+const frontendDistPath = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../frontend/dist',
+);
 
 @Module({
   imports: [
@@ -16,12 +21,11 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       appSecret: 'YOUR_APP_SECRET',
       serviceId: 'backend',
     }),
+    ProductsModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'frontend', 'dist'),
+      rootPath: frontendDistPath,
       exclude: ['/api/(.*)'],
     }),
   ],
-  controllers: [ProductsController],
-  providers: [ProductsService],
 })
 export class AppModule {}
