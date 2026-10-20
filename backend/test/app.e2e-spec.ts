@@ -52,6 +52,44 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/products filters first, then paginates matching products', async () => {
+      const productsResponse = await request(app.getHttpServer())
+        .get('/api/v1/products?limit=50')
+        .expect(200);
+      const sampleProduct = productsResponse.body.data[0];
+
+      const filteredResponse = await request(app.getHttpServer())
+        .get(
+          `/api/v1/products?page=1&limit=1&category=${encodeURIComponent(sampleProduct.category)}&stock_status=${sampleProduct.stock_status}`,
+        )
+        .expect(200);
+
+      expect(filteredResponse.body).toMatchObject({
+        page: 1,
+        limit: 1,
+        totalPages: filteredResponse.body.total,
+      });
+      expect(filteredResponse.body.total).toBeGreaterThan(0);
+      expect(filteredResponse.body.data).toHaveLength(1);
+      expect(filteredResponse.body.data[0]).toMatchObject({
+        category: sampleProduct.category,
+        stock_status: sampleProduct.stock_status,
+      });
+  });
+
+  it('/products returns different products on consecutive pages', async () => {
+      const firstPage = await request(app.getHttpServer())
+        .get('/api/v1/products?page=1&limit=1')
+        .expect(200);
+      const secondPage = await request(app.getHttpServer())
+        .get('/api/v1/products?page=2&limit=1')
+        .expect(200);
+
+      expect(firstPage.body.data).toHaveLength(1);
+      expect(secondPage.body.data).toHaveLength(1);
+      expect(firstPage.body.data[0].id).not.toBe(secondPage.body.data[0].id);
+  });
+
   afterEach(async () => {
     await app.close();
   });

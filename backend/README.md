@@ -47,15 +47,30 @@ $ npm run start:prod
 ## Run tests
 
 ```bash
-# unit tests
+# Backend unit tests
 $ npm run test
 
-# e2e tests
+# Backend HTTP integration tests
 $ npm run test:e2e
 
-# test coverage
+# Backend unit-test coverage
 $ npm run test:cov
+
+# Frontend unit and integration tests (from the repository root)
+$ npm test --prefix frontend
+
+# Full backend and frontend test suites (from the repository root)
+$ npm test
+
+# Unit-test coverage for both applications (from the repository root)
+$ npm run test:coverage
 ```
+
+Backend unit tests cover the repository, DTO validation, service filtering,
+pagination, cache keys, and defensive copies. Backend integration tests exercise
+the real Nest HTTP routes. Frontend tests cover isolated components and hooks,
+plus catalog loading, pagination, category/status filtering, error, and empty
+states with the API boundary mocked.
 
 ## Deployment
 
